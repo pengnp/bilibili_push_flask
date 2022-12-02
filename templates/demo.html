@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/demo.css') }}">
+<!--    <script src="https://unpkg.com/axios@1.1.3/dist/axios.min.js"></script>-->
+<!--    <script src="http://code.jquery.com/jquery-latest.js"></script>-->
+    {% block style %}{% endblock %}
+</head>
+<body>
+  <div class="box_1">
+      <div class="box_2">
+          <form action="/follows">
+              <button type="submit" value="我的关注列表" class="top_but">我的关注列表</button>
+          </form>
+          <form action="/users">
+              <button type="submit" value="用户列表" class="top_but">用户列表</button>
+          </form>
+      </div>
+      <div class="box_3">
+          {% block body %}{% endblock %}
+      </div>
+  </div>
+  <div class="box_4">
+    <form action="/log_out" method="get">
+        <button type="submit" class="log_out_but">点我退出</button>
+    </form>
+  </div>
+
+</body>
+</html>

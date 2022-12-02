@@ -1,0 +1,15 @@
+{% extends "demo.html" %}
+
+{% block title %}
+用户列表
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/no_permission.css') }}">
+{% endblock %}
+
+{% block body %}
+    <span>
+        喜仔！你没有权限的哇！！！
+    </span>
+{% endblock %}

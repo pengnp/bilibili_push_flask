@@ -1,0 +1,134 @@
+{% extends "demo.html" %}
+
+{% block title %}
+用户列表
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/demo_user.css') }}">
+{% endblock %}
+
+{% block body %}
+  <div class="user_title">
+    <span class="user_span_title">名称</span>
+    <span class="user_span_title_y">邮箱</span>
+    <span class="user_span_title_w">推送</span>
+    <span class="user_span_title_w">检查</span>
+    <span class="user_span_title_w">更新</span>
+    <span class="user_span_title">操作</span>
+  </div>
+  <div class="user_content">
+    {% for user_name, info in user_list.items() %}
+    <div class="user_content_info">
+      <span class="user_span_info user_span_info_bgcolor">
+        {{ user_name }}<br>
+        <span class="l_p">{{ info[4] }}</span>
+      </span>
+      <span class="user_span_info_y user_span_info_bgcolor">{{ info[0] }}</span>
+      <span class="user_span_info_w user_span_info_bgcolor">{{ info[1] }}</span>
+      <span class="user_span_info_w user_span_info_bgcolor">{{ info[2] }}</span>
+      <span class="user_span_info_w user_span_info_bgcolor">{{ info[3] }}</span>
+      <span class="suer_span_but">
+        <form action="/del_user" method="post">
+          <input name="user_name" type="hidden" value="{{ user_name }}">
+          <button type="submit" value="删除" class="user_but">删除</button>
+        </form>
+        <button type="button" value="修改" class="user_but" onclick="update('{{ user_name }}', '{{ info[0] }}',
+        '{{ info[1] }}', '{{ info[2] }}', '{{ info[3] }}');">修改</button>
+      </span>
+    </div>
+    {% endfor %}
+    <div class="cover" id="cover">
+      <div class="cover_box">
+        <div id="cover_box_update">
+          <form action="/update_user" method="post">
+          <input name="user_name" type="hidden" id="user_name">
+          <div class="nr">
+            邮箱：
+            <input type="text" name="email" class="input_1" id="user_email">
+          </div>
+          <div class="nr">
+            是否推送(是/否)：
+            <select id="push" class="input_1" name="push">
+              <option value="Y">是</option>
+              <option value="N">否</option>
+            </select>
+          </div>
+          <div class="nr">
+            是否检查(是/否)：
+            <select id="check" class="input_1" name="check">
+              <option value="Y">是</option>
+              <option value="N">否</option>
+            </select>
+          </div>
+          <div class="nr">
+            是否更新(是/否)：
+            <select id="update" class="input_1" name="update">
+              <option value="Y">是</option>
+              <option value="N">否</option>
+            </select>
+          </div>
+          <button type="submit" class="but">确定</button>
+          <button type="button" onclick="hide();" class="but">关闭</button>
+        </form>
+        </div>
+        <div id="cover_box_add">
+          <form action="/add_user" method="post">
+            <div class="nr">
+              名称：<input type="text" name="user_name" class="input_1">
+            </div>
+            <div class="nr">
+              B站ID：<input type="text" name="user_id" class="input_1">
+            </div>
+            <div class="nr">
+              邮箱：<input type="text" name="user_email" class="input_1">
+            </div>
+            <div class="nr">
+              设备：
+              <select class="input_1" name="user_model">
+                <option value="android">安卓</option>
+                <option value="ios">苹果</option>
+              </select>
+            </div>
+            <button type="submit" class="but">确定</button>
+            <button type="button" onclick="hide();" class="but">关闭</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="add_user_but" onclick="add();"> 添加用户 </button>
+<script type="text/javascript">
+  document.getElementById('cover').style.display="none";
+  function update(user_name, user_email, push, check, update){
+      document.getElementById('cover').style.display="";
+      document.getElementById('cover_box_update').style.display="";
+      document.getElementById('cover_box_add').style.display="none";
+      document.getElementById('user_name').setAttribute('value', user_name);
+      document.getElementById('user_email').setAttribute('value', user_email);
+      if(push == '否'){
+        document.getElementById('push').options[1].setAttribute('selected', 'selected');
+      }else{
+        document.getElementById('push').options[0].setAttribute('selected', 'selected');
+      }
+      if(check == '否'){
+        document.getElementById('check').options[1].setAttribute('selected', 'selected');
+      }else{
+        document.getElementById('check').options[0].setAttribute('selected', 'selected');
+      }
+      if(update == '否'){
+        document.getElementById('update').options[1].setAttribute('selected', 'selected');
+      }else{
+        document.getElementById('update').options[0].setAttribute('selected', 'selected');
+      }
+  }
+  function hide(){
+      document.getElementById('cover').style.display="none";
+  }
+  function add(){
+      document.getElementById('cover_box_add').style.display="";
+      document.getElementById('cover').style.display="";
+      document.getElementById('cover_box_update').style.display="none";
+  }
+</script>
+{% endblock %}

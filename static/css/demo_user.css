@@ -1,0 +1,153 @@
+.user_title{
+    width: 950px;
+    height: 40px;
+}
+.user_span_title{
+    width: 158px;
+    text-align: center;
+    display: block;
+    float: left;
+    font-size: 30px;
+}
+.user_span_title_w{
+    width: 90px;
+    text-align: center;
+    display: block;
+    float: left;
+    font-size: 30px;
+}
+.user_span_title_y{
+    width: 364px;
+    text-align: center;
+    display: block;
+    float: left;
+    font-size: 30px;
+}
+.user_content_info{
+    width: 950px;
+    height: 150px;
+}
+.user_content{
+    overflow-y:auto;
+    width: 950px;
+    height: 1200px;
+}
+.user_span_info{
+    width: 158px;
+    height: 150px;
+    text-align: center;
+    display: block;
+    float: left;
+    line-height: 70px;
+    font-size:30px;
+}
+.u_p{
+    margin-top:0px;
+    font-size:30px;
+}
+.l_p{
+    font-size:25px;
+}
+.user_span_info_w{
+    width: 90px;
+    height: 150px;
+    text-align: center;
+    display: block;
+    float: left;
+    font-size: 30px;
+    line-height: 150px;
+}
+.user_span_info_y{
+    width: 364px;
+    height: 150px;
+    text-align: center;
+    display: block;
+    float: left;
+    font-size: 30px;
+    line-height: 150px;
+}
+.user_span_info_bgcolor{
+    background-color: #FFAA33;
+}
+.user_but{
+    width: 160px;
+    height: 75px;
+    float: left;
+    font-size: 40px;
+}
+.suer_span_but{
+    width: 158px;
+    display: block;
+    float: left;
+}
+.cover{
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+}
+.cover_box{
+    width: 700px;
+    height: 832px;
+    position: relative;
+    margin: 30% auto;
+    background-color: #AAAAAA;
+}
+.close{
+    font-size: 500px
+    font-color: red;
+}
+.nr{
+    margin: 10% auto;
+    width: 500px;
+    height: 120px;
+    font-size: 30px;
+}
+.input_1{
+    width: 500px;
+    height: 70px;
+    font-size: 20px;
+}
+.but{
+    width:350px;
+    height: 70px;
+    border-width: 0px;
+    background-color: #87CEFA;
+    float: left;
+    font-size: 30px;
+}
+.but:hover{
+    background-color: #FFAA33;
+}
+.add_user_but{
+    width: 950px;
+    height: 100px;
+    border-width: 0px;
+    background-color: #87CEFA;
+    float: left;
+    font-size: 30px;
+}
+.add_user_but:hover{
+    background-color:#FFA07A;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

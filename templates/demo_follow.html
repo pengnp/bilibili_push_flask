@@ -1,0 +1,30 @@
+{% extends "demo.html" %}
+
+{% block title %}
+我的关注列表
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/demo_follow.css') }}">
+{% endblock %}
+
+{% block body %}
+  <div class="follow_title">
+    <span class="follow_span_title">ID</span>
+    <span class="follow_span_title_name">名称</span>
+    <span class="follow_span_title_num">视频数量</span>
+    <span class="follow_span_title_num">距离上次更新</span>
+  </div>
+  <div class="follow_content">
+    {% for mid, info in follows.items() %}
+    <div class="follow_content_info">
+      <span class="follow_span_title follow_span_title_bgcolor">{{ mid }}</span>
+      <span class="follow_span_title_name follow_span_title_bgcolor">
+        <a href="https://space.bilibili.com/{{ mid }}">{{ info[0] }}</a>
+      </span>
+      <span class="follow_span_title_num follow_span_title_bgcolor">{{ info[1] }}</span>
+      <span class="follow_span_title_num follow_span_title_bgcolor">{{ info[2] }}</span>
+    </div>
+    {% endfor %}
+  </div>
+{% endblock %}

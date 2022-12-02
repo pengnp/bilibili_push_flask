@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+    <div class="box">
+        <div class="box_left">
+            <span class="today" onclick="login();">{{ festival_dict.today[0] }}</span>
+            <span class="today_24jie">{{festival_dict.today_24jie[0]}}</span>
+            <div class="day_box">
+                <span class="today_dl">{{festival_dict.today_dlleft[0]}}</span>
+                <div class="today_date">
+                    <span class="today_d">{{festival_dict.day}}</span>
+                    <span class="today_w">{{festival_dict.today_week_id[0]}}</span>
+                    <span class="today_rl">{{festival_dict.today_nongli[0]}}</span>
+                </div>
+                <span class="today_dl">{{festival_dict.today_dlright[0]}}</span>
+            </div>
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <th>
+                        <div class="yi">宜</div>
+                    </th>
+                    <th>
+                        <div class="ji">忌</div>
+                    </th>
+                </tr>
+                <td>
+                    {% for yi in festival_dict.today_yi %}
+                    <span class="c">{{ yi }}</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for ji in festival_dict.today_ji %}
+                    <span class="c">{{ ji }}</span>
+                    {% endfor %}
+                </td>
+            </table>
+        </div>
+        <div class="box_right">
+            <h1>摸鱼办提醒您</h1>
+            {% for i in range(0, 6) %}
+            <div class="box_djs">
+                <span class="djs_fes">{{ festival_dict.festival_name[i] }}({{ festival_dict.festival_date[i] }})</span>
+                <span class="djs_date">{{ festival_dict.festival_djs[i] }}</span>
+            </div>
+            {% endfor %}
+            <form action="/" method="post" id="login">
+                <p>账号:</p>
+                <input type="text" name="user_name" class="login_input">
+                <button type="submit" value="提交" class="login_but">提交</button>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+      document.getElementById('login').style.display="none";
+      function login(){
+        document.getElementById('login').style.display="";
+      }
+  </script>
+</body>
+</html>

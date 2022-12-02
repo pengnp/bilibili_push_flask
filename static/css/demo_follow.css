@@ -1,0 +1,42 @@
+.follow_title{
+    width: 950px;
+    height: 40px;
+}
+.follow_span_title{
+    width: 237px;
+    text-align: center;
+    display: block;
+    float: left;
+    font-size: 30px;
+}
+.follow_span_title_num{
+    width: 180px;
+    text-align: center;
+    display: block;
+    float: left;
+    font-size: 30px;
+}
+.follow_span_title_name{
+    width: 350px;
+    text-align: center;
+    display: block;
+    float: left;
+    font-size: 30px;
+}
+.follow_content_info{
+    width: 950px;
+    height: 100px;
+}
+.follow_content{
+    overflow-y:auto;
+    width: 950px;
+    height: 1348px;
+}
+.follow_span_title_bgcolor{
+    height: 100px;
+    background-color: #FFAA33;
+    line-height: 100px;
+}
+a{
+    text-decoration: none;
+}
