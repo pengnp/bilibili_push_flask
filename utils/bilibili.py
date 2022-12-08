@@ -50,7 +50,7 @@ class BILIBILI:
         t1 = datetime.fromtimestamp(start_time)
         time_diff = (end_time - t1).days
         if time_diff < 0:
-            print(f'视频时间戳:{t1}, datatime.now时间戳:{time_diff}')
+            print(f'视频时间戳:{t1}, datatime.now时间戳:{datetime.now()}')
         return time_diff
 
     def update_user_info(self, user_k, user_v, flag=False):
