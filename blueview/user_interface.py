@@ -1,28 +1,21 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
-from functools import wraps
 from utils.yaml_util import YamlUtil
-from utils.config import DATA_YAML_PATH
-from utils.bilibili import PushAndUpdate
+from utils.config import DATA_YAML_PATH, BILI_EVENT, NEW_IMG_PATH
+from utils.bilibili import BILIBILI
 from utils.get_calendar import get_data
 import datetime
+import os
+import json
+from utils.decorator import is_login, is_admin, thread_check
 
+BILI = BILIBILI()
 yaml_func = YamlUtil(DATA_YAML_PATH)
 user_blue = Blueprint('user', __name__, url_prefix='/')
 
 
-def is_login(func):
-    @wraps(func)
-    def check_login(*args, **kwargs):
-        user_name = session.get('user_name')
-        if user_name:
-            return func(*args, **kwargs)
-        else:
-            return redirect(url_for('user.login'))
-    return check_login
-
-
 @user_blue.route('/', methods=['POST', 'GET'])
 def login():
+    img_list = json.dumps({'img': os.listdir(NEW_IMG_PATH)}, ensure_ascii=False)
     if request.method == 'POST':
         user_name = request.form.get('user_name')
         user_list = yaml_func.read
@@ -33,9 +26,10 @@ def login():
             yaml_func.write_w(user_list)
             return redirect(url_for('user.follows'))
         else:
-            return render_template('login.html', festival_dict=get_data())
+            return render_template('login.html', festival_dict=get_data(), img_list=img_list)
     else:
-        return render_template('login.html', festival_dict=get_data())
+
+        return render_template('login.html', festival_dict=get_data(), img_list=img_list)
 
 
 @user_blue.route('/follows', methods=['GET'])
@@ -47,27 +41,29 @@ def follows():
     return render_template('demo_follow.html', follows=follows, user_name=user_name)
 
 
-@user_blue.route('/users', methods=['GET'])
+@user_blue.route('/users', methods=['GET', 'POST'])
+@is_admin
 @is_login
 def users():
-    user_name = session.get('user_name')
-    if user_name == '彭能鹏':
-        user_list = yaml_func.read
-        user_info = {}
-        for k, v in user_list.items():
-            user_info[k] = [
-                v['email'],
-                '是' if v['push'] == 'Y' else '否',
-                '是' if v['check'] == 'Y' else '否',
-                '是' if v['update'] == 'Y' else '否',
-                v['login_time']
-            ]
-        return render_template('demo_user.html', user_list=user_info)
-    else:
-        return render_template('no_permission.html')
+    user_list = yaml_func.read
+    user_info = {}
+    thread_info = {}
+    for k, v in user_list.items():
+        user_info[k] = [
+            v['email'],
+            '是' if v['push'] == 'Y' else '否',
+            '是' if v['check'] == 'Y' else '否',
+            '是' if v['update'] == 'Y' else '否',
+            v['login_time']
+        ]
+    thread_info['push'] = 'true' if BILI_EVENT.ALL_EVENT['push'] else 'false'
+    thread_info['update'] = 'true' if BILI_EVENT.ALL_EVENT['update'] else 'false'
+    thread_info['check'] = 'true' if BILI_EVENT.ALL_EVENT['check'] else 'false'
+    return render_template('demo_user.html', user_list=user_info, thread_info=thread_info)
 
 
 @user_blue.route('/add_user', methods=['POST'])
+@thread_check
 @is_login
 def add_user():
     user_name = request.form.get('user_name')
@@ -80,18 +76,19 @@ def add_user():
             'email': user_email,
             'model': user_model,
             'mids': {},
-            'update': 'Y',
-            'check': 'Y',
-            'push': 'Y',
+            'update': 'N',
+            'check': 'N',
+            'push': 'N',
             'login_time': '暂无登录'
         }
     }
     yaml_func.write_a(info)
-    PushAndUpdate().start(user_name)
+    BILI.start(user_name, BILI.update_user_info)
     return redirect(url_for('user.users'))
 
 
 @user_blue.route('/del_user', methods=['POST'])
+@thread_check
 @is_login
 def del_user():
     user_name = request.form.get('user_name')
@@ -102,6 +99,7 @@ def del_user():
 
 
 @user_blue.route('/update_user', methods=['POST'])
+@thread_check
 @is_login
 def update_user():
     user_name = request.form.get('user_name')

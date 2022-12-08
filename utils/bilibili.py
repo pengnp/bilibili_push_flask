@@ -6,10 +6,10 @@ from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
 from utils.yaml_util import YamlUtil
 from utils.send_email import SendEmail
-from utils.config import TEMPLATES_PATH, DATA_YAML_PATH
+from utils.config import TEMPLATES_PATH, DATA_YAML_PATH, BILI_EVENT
 
 
-class PushAndUpdate:
+class BILIBILI:
 
     def __init__(self):
         self._demo_html = "template.html"
@@ -19,13 +19,9 @@ class PushAndUpdate:
                           "(KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36 Edg/107.0.0.0"
         }
         self._yaml_fun = YamlUtil(DATA_YAML_PATH)
+        self.data_result = {}
 
     def _template_render(self, datas, model):
-        """
-        :param datas: 需要推送的视频数据
-        :param model: 设备型号 Android、ios
-        :return: 写入好的数据模板
-        """
         loader = FileSystemLoader(TEMPLATES_PATH)
         env = Environment(loader=loader)
         template = env.get_template(self._demo_html)
@@ -33,11 +29,6 @@ class PushAndUpdate:
         return html
 
     def _search_api(self, umid):
-        """
-        获取up视频数据
-        :param umid: up的id
-        :return: 返回接口数据
-        """
         sleep(random.uniform(1.0, 3.0))
         url = 'https://api.bilibili.com/x/space/arc/search'
         param = {
@@ -56,20 +47,13 @@ class PushAndUpdate:
             return None
 
     def _time_diff(self, start_time, end_time=datetime.now()):
-        """
-        计算两个时间差，单位 day
-        """
         t1 = datetime.fromtimestamp(start_time)
         time_diff = (end_time - t1).days
+        if time_diff < 0:
+            print(f'视频时间戳:{t1}, datatime.now时间戳:{time_diff}')
         return time_diff
 
-    def _update_user_info(self, user_k, user_v, flag=False):
-        """
-        更新本地user数据
-        :param user_k: user的名称
-        :param user_v: user数据
-        :return: False
-        """
+    def update_user_info(self, user_k, user_v, flag=False):
         new_user_data = {}
         url = 'https://api.bilibili.com/x/relation/followings'
         param = {
@@ -103,18 +87,12 @@ class PushAndUpdate:
         result = self._analysis(user_v['mids'], new_user_data, user_k)
         if flag:
             self._yaml_fun.write_w(self.data_result)
+            BILI_EVENT.ALL_EVENT['update'] = False
             print(f'{user_k}添加完成')
         if result:
             return '有up更改了名字', user_v['email'], result
 
     def _analysis(self, old_data, new_data, user_k):
-        """
-        与本地数据进行对照处理
-        :param old_data: 本地user数据
-        :param new_data: 新的user数据
-        :param user_k: user的名称
-        :return:
-        """
         history = {'添加': [], '删除': [], '更改名字': []}
         differ = old_data.keys() ^ new_data.keys()
         same = old_data.keys() & new_data.keys()
@@ -141,15 +119,9 @@ class PushAndUpdate:
                 print(f'\t {k}: {v}')
                 if k == '更改名字':
                     return f"<p style='font-size:15px;'> {v} </p>"
-        return None
+        return False
 
-    def _push(self, user_k, user_v):
-        """
-        推送检测
-        :param user_k: user名称
-        :param user_v: user数据
-        :return: 有更新返回发邮件所需数据，无则返回False
-        """
+    def push(self, user_k, user_v):
         push_datas = {}
         for umid, uv in user_v['mids'].items():
             if uv[2] > 7:
@@ -181,13 +153,7 @@ class PushAndUpdate:
             return subject, user_v['email'], msg
         return False
 
-    def _week_chenck(self, user_k, user_v):
-        """
-        鸽子检查
-        :param user_k: user名称
-        :param user_v: user数据
-        :return: 有鸽子返回发邮件所需数据，无则返回False
-        """
+    def week_chenck(self, user_k, user_v):
         msg = ''
         subject = '本星期鸽子总结'
         print(user_k)
@@ -203,36 +169,35 @@ class PushAndUpdate:
             return subject, user_v['email'], msg
         return False
 
-    def start(self, config_key):
-        """
-        梦开始的地方
-        :param config_key: configure.yml中的key，根据相应的key执行相应的动作
-        :return:
-        """
-        self.data_result = self._yaml_fun.read
+    def _event_check(self, event1, event2, event3):
+        while BILI_EVENT.ALL_EVENT[event2] or BILI_EVENT.ALL_EVENT[event3]:
+            sleep(3)
+            print(f'检测到数据文件正在被使用,任务{event1}暂时停止')
+        BILI_EVENT.ALL_EVENT[event1] = True
+
+    def start(self, event, function):
+        event_list = ['push', 'update', 'check']
         threading_list = []
-        if config_key not in ['push', 'update', 'check']:
-            print(f'添加用户{config_key}, 执行时间：{datetime.now()}')
-            import threading
-            th = threading.Thread(target=self._update_user_info, args=(config_key, self.data_result[config_key], True))
-            th.daemon = True
-            th.start()
-        else:
-            print(f'定时任务执行, 执行任务：{config_key}, 执行时间：{datetime.now()}')
+        if event in event_list:
+            event_list.remove(event)
+            self._event_check(event, event_list[0], event_list[1])
+            print(f'定时任务执行, 执行任务：{event}, 执行时间：{datetime.now()}')
+            self.data_result = self._yaml_fun.read
             for user_k, user_v in self.data_result.items():
-                if self.data_result[user_k]['push'] == 'Y' and config_key == 'push':
-                    threading_list.append(self._executor.submit(self._push, user_k, user_v))
-                elif self.data_result[user_k]['update'] == 'Y' and config_key == 'update':
-                    threading_list.append(self._executor.submit(self._update_user_info, user_k, user_v))
-                elif self.data_result[user_k]['check'] == 'Y' and config_key == 'check':
-                    threading_list.append(self._executor.submit(self._week_chenck, user_k, user_v))
-        for future in as_completed(threading_list):
-            f = future.result()
-            if f:
-                SendEmail(f[0], f[1], f[2]).send_email()
-        if config_key in ['push', 'update']:
+                if self.data_result[user_k][event] == 'Y':
+                    threading_list.append(self._executor.submit(function, user_k, user_v))
+            for future in as_completed(threading_list):
+                f = future.result()
+                if f:
+                    SendEmail(f[0], f[1], f[2]).send_email()
             self._yaml_fun.write_w(self.data_result)
+            BILI_EVENT.ALL_EVENT[event] = False
+            print(f'定时任务执行{event}, 执行完成')
+        else:
+            print(f'添加用户：{event}, 执行时间：{datetime.now()}')
+            BILI_EVENT.ALL_EVENT['update'] = True
+            self.data_result = self._yaml_fun.read
+            threading_list.append(self._executor.submit(function, event, self.data_result[event], True))
+            as_completed(threading_list)
 
 
-if __name__ == '__main__':
-    PushAndUpdate().start('push')

@@ -48,6 +48,7 @@
                 <span class="djs_date">{{ festival_dict.festival_djs[i] }}</span>
             </div>
             {% endfor %}
+            <img src="/static/img/new/1.png" alt="" id="tupian">
             <form action="/" method="post" id="login">
                 <p>账号:</p>
                 <input type="text" name="user_name" class="login_input">
@@ -55,11 +56,30 @@
             </form>
         </div>
     </div>
+    <div id="dataid" d="{{img_list}}" style="display:none"></div>
     <script type="text/javascript">
-      document.getElementById('login').style.display="none";
-      function login(){
-        document.getElementById('login').style.display="";
-      }
+        tupian = true
+
+        var data = document.getElementById('dataid').getAttribute('d');
+        var img_list = JSON.parse(data).img;
+        document.getElementById('login').style.display="none";
+
+        function login(){
+            document.getElementById('login').style.display="";
+            document.getElementById('tupian').style.display="none";
+            tupian = false
+        }
+
+        function lunbo(){
+            if(tupian){
+                index = Math.floor(Math.random() * img_list.length);
+                var img = document.getElementById("tupian");
+                img.src = "/static/img/new/"+img_list[index];
+                console.log(index)
+            }
+        }
+        //2.定义定时器
+        setInterval(lunbo,2000);
   </script>
 </body>
 </html>

@@ -1,11 +1,13 @@
 from flask import Flask
 from datetime import timedelta
-from blueview.Interface import user_blue
+from blueview.user_interface import user_blue
+from blueview.backstage_interface import backstage_blue
 from utils.scheduled_tasks import Config
 from flask_apscheduler import APScheduler
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.register_blueprint(backstage_blue)
 app.register_blueprint(user_blue)
 app.secret_key = 'u2jksidjflsduwerjl'
 app.permanent_session_lifetime = timedelta(days=1)

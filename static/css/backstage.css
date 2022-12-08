@@ -1,0 +1,30 @@
+img{
+    width: 370px;
+    height: 250px;
+}
+.box_img{
+    margin: 1% 5%;
+    width: 370px;
+    height: 350px;
+    float: left;
+}
+.box{
+    width: 950px;
+    height: 1000px;
+    margin: 0% auto 10% auto;
+    overflow-y:auto;
+}
+.img_del{
+    font-size: 30px;
+    width: 370px;
+    height: 80px;
+}
+.upload_img{
+    background-color: pink;
+    font-size: 50px;
+    width: 570px;
+}
+p{
+    font-size: 30px;
+    color: red;
+}

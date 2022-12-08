@@ -42,35 +42,35 @@
       <div class="cover_box">
         <div id="cover_box_update">
           <form action="/update_user" method="post">
-          <input name="user_name" type="hidden" id="user_name">
-          <div class="nr">
-            邮箱：
-            <input type="text" name="email" class="input_1" id="user_email">
-          </div>
-          <div class="nr">
-            是否推送(是/否)：
-            <select id="push" class="input_1" name="push">
-              <option value="Y">是</option>
-              <option value="N">否</option>
-            </select>
-          </div>
-          <div class="nr">
-            是否检查(是/否)：
-            <select id="check" class="input_1" name="check">
-              <option value="Y">是</option>
-              <option value="N">否</option>
-            </select>
-          </div>
-          <div class="nr">
-            是否更新(是/否)：
-            <select id="update" class="input_1" name="update">
-              <option value="Y">是</option>
-              <option value="N">否</option>
-            </select>
-          </div>
-          <button type="submit" class="but">确定</button>
-          <button type="button" onclick="hide();" class="but">关闭</button>
-        </form>
+            <input name="user_name" type="hidden" id="user_name">
+            <div class="nr">
+              邮箱：
+              <input type="text" name="email" class="input_1" id="user_email">
+            </div>
+            <div class="nr">
+              是否推送(是/否)：
+              <select id="push" class="input_1" name="push">
+                <option value="Y">是</option>
+                <option value="N">否</option>
+              </select>
+            </div>
+            <div class="nr">
+              是否检查(是/否)：
+              <select id="check" class="input_1" name="check">
+                <option value="Y">是</option>
+                <option value="N">否</option>
+              </select>
+            </div>
+            <div class="nr">
+              是否更新(是/否)：
+              <select id="update" class="input_1" name="update">
+                <option value="Y">是</option>
+                <option value="N">否</option>
+              </select>
+            </div>
+            <button type="submit" class="but">确定</button>
+            <button type="button" onclick="hide();" class="but">关闭</button>
+          </form>
         </div>
         <div id="cover_box_add">
           <form action="/add_user" method="post">
@@ -97,7 +97,7 @@
       </div>
     </div>
   </div>
-  <button type="button" class="add_user_but" onclick="add();"> 添加用户 </button>
+  <button type="button" class="add_user_but" onclick="add();" id="add"> 添加用户 </button>
 <script type="text/javascript">
   document.getElementById('cover').style.display="none";
   function update(user_name, user_email, push, check, update){
@@ -129,6 +129,14 @@
       document.getElementById('cover_box_add').style.display="";
       document.getElementById('cover').style.display="";
       document.getElementById('cover_box_update').style.display="none";
+  }
+  if ({{ thread_info['update'] }} || {{thread_info['push']}} || {{thread_info['check']}}){
+    Array.from(document.getElementsByClassName("user_but")).forEach(
+    function(element, index, array) {
+        element.setAttribute("disabled", true);
+    }
+  );
+  document.getElementById('add').setAttribute("disabled", true);
   }
 </script>
 {% endblock %}
