@@ -1,15 +1,16 @@
+from pprint import pprint
+import json
 import requests
 from lxml import etree
 import datetime
+from utils.config import header
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
-def get_data():
+# 日历数据
+def _get_rili_data():
     festival_dict = {}
     url = 'https://www.rili.com.cn/'
-    header = {
-        "User-Agent": "Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 "
-                      "(KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36 Edg/107.0.0.0"
-    }
     response = requests.get(url=url, headers=header).text
     res_html = etree.HTML(response)
     element_xpath = {
@@ -29,3 +30,57 @@ def get_data():
         festival_dict[elem] = res_html.xpath(el_xpath)
     festival_dict['day'] = datetime.datetime.now().strftime('%d')
     return festival_dict
+
+
+# 新闻
+def _get_news(key, value):
+    url = f'https://3g.163.com/touch/reconstruct/article/list/{value}/0-10.html'
+    response = json.loads(requests.get(url=url, headers=header).text[9:-1])[value]
+    return key, value, response
+
+
+def get_data():
+    # 'BBM54PGAwangning': None,  # 新闻
+    # 'BA10TA81wangning': None,  # 娱乐
+    # 'BA8E6OEOwangning': None,  # 体育
+    # 'BA8EE5GMwangning': None,  # 财经
+    # 'BAI67OGGwangning': None,  # 军事
+    # 'BA8D4A3Rwangning': None,  # 科技
+    # 'BAI6I0O5wangning': None,  # 手机
+    # 'BAI6JOD9wangning': None,  # 数码
+    # 'BA8F6ICNwangning': None,  # 时尚
+    # 'BAI6RHDKwangning': None,  # 游戏
+    # 'BA8FF5PRwangning': None,  # 教育
+    # 'BDC4QSV3wangning': None,  # 健康
+    # 'BEO4GINLwangning': None,  # 旅游
+    executor = ThreadPoolExecutor()
+    data_dict = {
+        'news': {
+            '新闻': 'BBM54PGAwangning',
+            '娱乐': 'BA10TA81wangning',
+            '体育': 'BA8E6OEOwangning',
+            '财经': 'BA8EE5GMwangning',
+            '军事': 'BAI67OGGwangning',
+            '科技': 'BA8D4A3Rwangning',
+            '手机': 'BAI6I0O5wangning',
+            '数码': 'BAI6JOD9wangning',
+            '时尚': 'BA8F6ICNwangning',
+            '游戏': 'BAI6RHDKwangning',
+            '教育': 'BA8FF5PRwangning',
+            '健康': 'BDC4QSV3wangning',
+            '旅游': 'BEO4GINLwangning'
+        },
+        'rili': None  # 日历
+    }
+    threading_list = []
+    for key, value in data_dict['news'].items():
+        threading_list.append(executor.submit(_get_news, key, value))
+    for future in as_completed(threading_list):
+        f = future.result()
+        data_dict['news'][f[0]] = f[2]
+    data_dict['rili'] = _get_rili_data()
+    return data_dict
+
+
+if __name__ == '__main__':
+    pprint(get_data())

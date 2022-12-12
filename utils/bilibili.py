@@ -6,7 +6,7 @@ from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
 from utils.yaml_util import YamlUtil
 from utils.send_email import SendEmail
-from utils.config import TEMPLATES_PATH, DATA_YAML_PATH, BILI_EVENT
+from utils.config import TEMPLATES_PATH, DATA_YAML_PATH, BILI_EVENT, header
 
 
 class BILIBILI:
@@ -14,10 +14,6 @@ class BILIBILI:
     def __init__(self):
         self._demo_html = "template.html"
         self._executor = ThreadPoolExecutor(max_workers=3)
-        self._header = {
-            "User-Agent": "Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 "
-                          "(KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36 Edg/107.0.0.0"
-        }
         self._yaml_fun = YamlUtil(DATA_YAML_PATH)
         self.data_result = {}
 
@@ -39,18 +35,16 @@ class BILIBILI:
             'order': 'pubdate',
             'jsonp': 'jsonp'
         }
-        response = requests.get(url=url, headers=self._header, params=param).json()
+        response = requests.get(url=url, headers=header, params=param).json()
         if response['code'] == 0:
             return response
         else:
             print(f'{umid}请求有误, 接口返回：{response}')
             return None
 
-    def _time_diff(self, start_time, end_time=datetime.now()):
-        t1 = datetime.fromtimestamp(start_time)
+    def _time_diff(self, start_time, end_time=datetime.date(datetime.now())):
+        t1 = datetime.date(datetime.fromtimestamp(start_time))
         time_diff = (end_time - t1).days
-        if time_diff < 0:
-            print(f'视频时间戳:{t1}, datatime.now时间戳:{datetime.now()}')
         return time_diff
 
     def update_user_info(self, user_k, user_v, flag=False):
@@ -64,7 +58,7 @@ class BILIBILI:
                 'order_type': 'attention',
                 'jsonp': 'jsonp'
         }
-        followings_res = requests.get(url=url, headers=self._header, params=param).json()
+        followings_res = requests.get(url=url, headers=header, params=param).json()
         total = followings_res['data']['total']
         if total % 50 == 0:
             for_count = total // 50
@@ -73,7 +67,7 @@ class BILIBILI:
         for i in range(1, for_count + 1):
             if i != 1:
                 param['pn'] = i
-                followings_res = requests.get(url=url, headers=self._header, params=param).json()
+                followings_res = requests.get(url=url, headers=header, params=param).json()
             for data in followings_res['data']['list']:
                 umid, name = data['mid'], data['uname']
                 response = self._search_api(umid)
@@ -201,3 +195,6 @@ class BILIBILI:
             as_completed(threading_list)
 
 
+if __name__ == '__main__':
+    BILI = BILIBILI()
+    BILI.start('update', BILI.update_user_info)

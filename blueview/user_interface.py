@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
 from utils.yaml_util import YamlUtil
-from utils.config import DATA_YAML_PATH, BILI_EVENT, NEW_IMG_PATH
+from utils.config import DATA_YAML_PATH, BILI_EVENT, IMG_PATH
 from utils.bilibili import BILIBILI
 from utils.get_calendar import get_data
 import datetime
@@ -15,7 +15,7 @@ user_blue = Blueprint('user', __name__, url_prefix='/')
 
 @user_blue.route('/', methods=['POST', 'GET'])
 def login():
-    img_list = json.dumps({'img': os.listdir(NEW_IMG_PATH)}, ensure_ascii=False)
+    img_list = json.dumps({'img': os.listdir(IMG_PATH)}, ensure_ascii=False)
     if request.method == 'POST':
         user_name = request.form.get('user_name')
         user_list = yaml_func.read
@@ -26,10 +26,9 @@ def login():
             yaml_func.write_w(user_list)
             return redirect(url_for('user.follows'))
         else:
-            return render_template('login.html', festival_dict=get_data(), img_list=img_list)
+            return render_template('login.html', data_dict=get_data(), img_list=img_list)
     else:
-
-        return render_template('login.html', festival_dict=get_data(), img_list=img_list)
+        return render_template('login.html', data_dict=get_data(), img_list=img_list)
 
 
 @user_blue.route('/follows', methods=['GET'])

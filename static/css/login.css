@@ -17,9 +17,9 @@ h1{
     text-align: center;
     color: red;
 }
-img{
+.tupian{
     width: 370px;
-    height: 250px;
+    height: 277px;
 }
 p{
     font-size: 30px;
@@ -62,9 +62,10 @@ form{
 
 .day_box{
     width: 585px;
-    height: 570px;
+    height: 495px;
     overflow: hidden;
     margin: 2% 2% 0 0;
+    overflow-y:auto;
 }
 
 .today_dl{
@@ -123,8 +124,8 @@ table{
     border: 1px solid black;
     width: 100%;
     table-layout:fixed;
+    height: 272px;
 }
-
 td{
     border: 1px solid black;
 }
@@ -142,7 +143,7 @@ td{
 }
 .c{
     display: block;
-    font-size: 25px;
+    font-size: 30px;
     width: 140px;
     float: left;
     text-align: center;
@@ -174,4 +175,59 @@ td{
     background: #cc6600;
     color: #fff;
     float: left
+}
+
+
+.news{
+    height: 1300px;
+    width: 950px;
+    overflow-y:auto;
+    margin-top: 5%;
+}
+a{
+    text-decoration: none;
+    font-weight: bold;
+}
+.table_title{
+    font-size: 45px;
+    border-bottom: 4px solid #00FFFF;
+    font-weight: bold;
+}
+.table_title:hover{
+    color: #FFAA33;
+}
+.news_img{
+    height: 252px;
+    width: 363px;
+    float: left;
+    margin-right: 8px;
+    border-radius:5px;
+}
+.news_content{
+    height: 255px;
+    width: 950px;
+    margin: 5% 0%;
+}
+.news_title{
+    float: left;
+    height:80px;
+    font-size: 30px;
+    width: 570px;
+}
+.news_digest{
+    float: left;
+    height:140px;
+    font-size: 25px;
+    width: 570px;
+}
+.a_color{
+    color: #888888;
+}
+.news_info{
+    float: left;
+    height: 25px;
+    width: 570px;
+}
+.news_info span{
+    font-size: 25px;
 }

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
-from utils.config import NEW_IMG_PATH, OLD_IMG_PATH
+from utils.config import IMG_PATH
 from utils.tinypng import compress_core
 import os
 import threading
@@ -13,17 +13,16 @@ backstage_blue = Blueprint('backstage', __name__, url_prefix='/')
 @is_login
 def upload_img():
     if session.get('user_name') == '彭能鹏':
-        img_list = os.listdir(NEW_IMG_PATH)
+        img_list = os.listdir(IMG_PATH)
         if request.method == 'GET':
             return render_template('backstage.html', img_list=img_list, msg=None)
         else:
             img_date = request.files['img']
             if img_date:
                 img_name = img_date.filename
-                old_file_path = os.path.join(OLD_IMG_PATH, img_name)
-                new_file_path = os.path.join(NEW_IMG_PATH, img_name)
-                img_date.save(old_file_path)
-                th = threading.Thread(target=compress_core, args=(old_file_path, new_file_path))
+                file_path = os.path.join(IMG_PATH, img_name)
+                img_date.save(file_path)
+                th = threading.Thread(target=compress_core, args=(file_path, file_path))
                 th.daemon = True
                 th.start()
                 return render_template('backstage.html', img_list=img_list, msg='上传成功')
@@ -36,7 +35,7 @@ def upload_img():
 @backstage_blue.route('/del_img', methods=['POST'])
 def del_img():
     img_name = request.form.get('img_name')
-    img_path = os.path.join(NEW_IMG_PATH, img_name)
+    img_path = os.path.join(IMG_PATH, img_name)
     os.remove(img_path)
     return redirect(url_for('backstage.upload_img'))
 

@@ -8,19 +8,19 @@
 <body>
     <div class="box">
         <div class="box_left">
-            <span class="today" onclick="login();">{{ festival_dict.today[0] }}</span>
-            <span class="today_24jie">{{festival_dict.today_24jie[0]}}</span>
+            <span class="today" onclick="login();">{{ data_dict.rili.today[0] }}</span>
+            <span class="today_24jie">{{data_dict.rili.today_24jie[0]}}</span>
             <div class="day_box">
-                <span class="today_dl">{{festival_dict.today_dlleft[0]}}</span>
+                <span class="today_dl">{{data_dict.rili.today_dlleft[0]}}</span>
                 <div class="today_date">
-                    <span class="today_d">{{festival_dict.day}}</span>
-                    <span class="today_w">{{festival_dict.today_week_id[0]}}</span>
-                    <span class="today_rl">{{festival_dict.today_nongli[0]}}</span>
+                    <span class="today_d">{{data_dict.rili.day}}</span>
+                    <span class="today_w">{{data_dict.rili.today_week_id[0]}}</span>
+                    <span class="today_rl">{{data_dict.rili.today_nongli[0]}}</span>
                 </div>
-                <span class="today_dl">{{festival_dict.today_dlright[0]}}</span>
+                <span class="today_dl">{{data_dict.rili.today_dlright[0]}}</span>
             </div>
             <table cellpadding="0" cellspacing="0">
-                <tr>
+                <tr style="height: 44px;">
                     <th>
                         <div class="yi">宜</div>
                     </th>
@@ -29,12 +29,12 @@
                     </th>
                 </tr>
                 <td>
-                    {% for yi in festival_dict.today_yi %}
+                    {% for yi in data_dict.rili.today_yi %}
                     <span class="c">{{ yi }}</span>
                     {% endfor %}
                 </td>
                 <td>
-                    {% for ji in festival_dict.today_ji %}
+                    {% for ji in data_dict.rili.today_ji %}
                     <span class="c">{{ ji }}</span>
                     {% endfor %}
                 </td>
@@ -44,11 +44,11 @@
             <h1>摸鱼办提醒您</h1>
             {% for i in range(0, 6) %}
             <div class="box_djs">
-                <span class="djs_fes">{{ festival_dict.festival_name[i] }}({{ festival_dict.festival_date[i] }})</span>
-                <span class="djs_date">{{ festival_dict.festival_djs[i] }}</span>
+                <span class="djs_fes">{{ data_dict.rili.festival_name[i] }}({{ data_dict.rili.festival_date[i] }})</span>
+                <span class="djs_date">{{ data_dict.rili.festival_djs[i] }}</span>
             </div>
             {% endfor %}
-            <img src="/static/img/new/1.png" alt="" id="tupian">
+            <img src="/static/img/1.png" alt="" id="tupian" class="tupian">
             <form action="/" method="post" id="login">
                 <p>账号:</p>
                 <input type="text" name="user_name" class="login_input">
@@ -56,13 +56,56 @@
             </form>
         </div>
     </div>
+    {%for key in data_dict.news.keys()%}
+    <span class="table_title" onclick="xs('{{key}}');" id="title_{{key}}">
+        {{key}}
+    </span>
+    {%endfor%}
+    {%for key in data_dict.news.keys()%}
+    <div class="news" id="{{key}}">
+        {%for v in data_dict.news[key]%}
+        <div class="news_content">
+            <img src="{{v.imgsrc}}" alt="" class="news_img">
+            {%if v.skipType not in ['video','photoset']%}
+            <div class="news_title">
+                <a href="{{v.url}}">{{v.title}}</a>
+            </div>
+            <div class="news_digest">
+                <a href="{{v.url}}" class="a_color">{{v.digest}}...</a>
+            </div>
+            {%else%}
+            <div class="news_title">
+                <a href="{{v.skipURL}}">{{v.title}}</a>
+            </div>
+            <div class="news_digest">
+                <a href="{{v.skipURL}}" class="a_color">点我查看视频详情页</a>
+            </div>
+            {%endif%}
+            <div class="news_info">
+                <span style="float: left; font-weight:bold;">
+                    {{v.source}}
+                </span>
+                <span style="float: right; font-weight:bold;">
+                    {{v.ptime}}
+                </span>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+    {%endfor%}
     <div id="dataid" d="{{img_list}}" style="display:none"></div>
     <script type="text/javascript">
         tupian = true
-
         var data = document.getElementById('dataid').getAttribute('d');
         var img_list = JSON.parse(data).img;
         document.getElementById('login').style.display="none";
+
+        Array.from(document.getElementsByClassName("news")).forEach(
+            function(element, index, array) {
+                if(index != 0){
+                    element.style.display="none";
+                }
+        });
 
         function login(){
             document.getElementById('login').style.display="";
@@ -74,12 +117,22 @@
             if(tupian){
                 index = Math.floor(Math.random() * img_list.length);
                 var img = document.getElementById("tupian");
-                img.src = "/static/img/new/"+img_list[index];
+                img.src = "/static/img/"+img_list[index];
                 console.log(index)
             }
         }
         //2.定义定时器
         setInterval(lunbo,2000);
+
+        function xs(elm){
+            Array.from(document.getElementsByClassName("news")).forEach(
+            function(element, index, array) {
+                if(element.getAttribute('id') != 'elm' ){
+                    element.style.display="none";
+                }
+            });
+            document.getElementById(elm).style.display="";
+        }
   </script>
 </body>
 </html>
