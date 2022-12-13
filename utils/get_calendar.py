@@ -40,19 +40,6 @@ def _get_news(key, value):
 
 
 def get_data():
-    # 'BBM54PGAwangning': None,  # 新闻
-    # 'BA10TA81wangning': None,  # 娱乐
-    # 'BA8E6OEOwangning': None,  # 体育
-    # 'BA8EE5GMwangning': None,  # 财经
-    # 'BAI67OGGwangning': None,  # 军事
-    # 'BA8D4A3Rwangning': None,  # 科技
-    # 'BAI6I0O5wangning': None,  # 手机
-    # 'BAI6JOD9wangning': None,  # 数码
-    # 'BA8F6ICNwangning': None,  # 时尚
-    # 'BAI6RHDKwangning': None,  # 游戏
-    # 'BA8FF5PRwangning': None,  # 教育
-    # 'BDC4QSV3wangning': None,  # 健康
-    # 'BEO4GINLwangning': None,  # 旅游
     executor = ThreadPoolExecutor()
     data_dict = {
         'news': {

@@ -29,7 +29,7 @@ def upload_img():
             else:
                 return render_template('backstage.html', img_list=img_list, msg='请选择图片')
     else:
-        return render_template('no_permission.html', title='图库')
+        return render_template('no_permission.html')
 
 
 @backstage_blue.route('/del_img', methods=['POST'])
