@@ -36,6 +36,14 @@ def _get_rili_data():
 def _get_news(key, value):
     url = f'https://3g.163.com/touch/reconstruct/article/list/{value}/0-10.html'
     response = json.loads(requests.get(url=url, headers=header).text[9:-1])[value]
+    for data in response:
+        if key in ['军事', '时尚'] and 'skipType' in data and 'photosetID' in data:
+            phot_id = data['photosetID'].split('|')
+            data['skipURL'] = f'https://3g.163.com/war/photoview/{phot_id[0]}/{phot_id[1]}.html'
+        if data['imgsrc'] == '':
+            data['imgsrc'] = '/static/img/1.jpg'
+        if data['url'] == '':
+            data['url'] = f"https://3g.163.com/news/article/{data['docid']}.html"
     return key, value, response
 
 

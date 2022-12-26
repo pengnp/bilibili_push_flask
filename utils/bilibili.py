@@ -42,9 +42,12 @@ class BILIBILI:
             print(f'{umid}请求有误, 接口返回：{response}')
             return None
 
-    def _time_diff(self, start_time, end_time=datetime.date(datetime.now())):
+    def _time_diff(self, start_time):
+        end_time = datetime.date(datetime.now())
         t1 = datetime.date(datetime.fromtimestamp(start_time))
         time_diff = (end_time - t1).days
+        if time_diff < 0:
+            print(f'now_date: {end_time}, video_date: {t1}, diff: {time_diff}')
         return time_diff
 
     def update_user_info(self, user_k, user_v, flag=False):

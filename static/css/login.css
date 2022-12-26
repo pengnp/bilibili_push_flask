@@ -2,6 +2,8 @@
     width: 950px;
     height: 1000px;
     margin: 0 auto;
+    border-bottom: 3px solid;
+    margin: 30px auto;
 }
 .box_left{
     width: 585px;
@@ -190,11 +192,8 @@ a{
 }
 .table_title{
     font-size: 45px;
-    border-bottom: 4px solid #00FFFF;
-    font-weight: bold;
-}
-.table_title:hover{
-    color: #FFAA33;
+    border-radius: 3%;
+    margin:3% 3%;
 }
 .news_img{
     height: 252px;

@@ -21,5 +21,3 @@ if __name__ == '__main__':
 
 #  https://www.cnblogs.com/shenh/p/13366583.html 定时器
 #  https://blog.csdn.net/m0_49475727/article/details/115124956 解决定时器问题
-
-# 370

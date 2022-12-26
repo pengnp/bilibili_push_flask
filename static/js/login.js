@@ -15,23 +15,33 @@ function login(){
     document.getElementById('tupian').style.display="none";
     tupian = false
 }
+//$('#login').hide();
+//$('#tupian').show();
+//$('span.today').click(
+//    function(){
+//       $('#login').toggle()
+//       $('#tupian').toggle()
+//    }
+//);
 
 function lunbo(){
     if(tupian){
         index = Math.floor(Math.random() * img_list.length);
         var img = document.getElementById("tupian");
         img.src = "/static/img/"+img_list[index];
-        console.log(index)
     }
 }
 //2.定义定时器
 setInterval(lunbo, 3000);
 
+document.getElementById('title_新闻').style.backgroundColor="#FFAA33";
 function xs(elm){
+    document.getElementById('title_'+elm).style.backgroundColor="#FFAA33";
     Array.from(document.getElementsByClassName("news")).forEach(
     function(element, index, array) {
-        if(element.getAttribute('id') != 'elm' ){
+        if(element.getAttribute('id') != elm ){
             element.style.display="none";
+            document.getElementById('title_'+element.getAttribute('id')).style.backgroundColor="";
         }
     });
     document.getElementById(elm).style.display="";
