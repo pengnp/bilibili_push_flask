@@ -26,7 +26,7 @@ def login():
             yaml_func.write_w(user_list)
             return redirect(url_for('user.follows'))
         else:
-            return render_template('login.html', data_dict=get_data(), img_list=img_list)
+            return f'<h1>用户不存在，请联系管理员添加</h1>'
     else:
         return render_template('login.html', data_dict=get_data(), img_list=img_list)
 
@@ -69,21 +69,24 @@ def add_user():
     user_mid = request.form.get('user_id')
     user_email = request.form.get('user_email')
     user_model = request.form.get('user_model')
-    info = {
-        user_name: {
-            'mid': user_mid,
-            'email': user_email,
-            'model': user_model,
-            'mids': {},
-            'update': 'N',
-            'check': 'N',
-            'push': 'N',
-            'login_time': '暂无登录'
+    if user_name not in yaml_func.read:
+        info = {
+            user_name: {
+                'mid': user_mid,
+                'email': user_email,
+                'model': user_model,
+                'mids': {},
+                'update': 'N',
+                'check': 'N',
+                'push': 'N',
+                'login_time': '暂无登录'
+            }
         }
-    }
-    yaml_func.write_a(info)
-    BILI.start(user_name, BILI.update_user_info)
-    return redirect(url_for('user.users'))
+        yaml_func.write_a(info)
+        BILI.start(user_name, BILI.update_user_info)
+        return redirect(url_for('user.users'))
+    else:
+        return f'<h1>用户已存在</h1>'
 
 
 @user_blue.route('/del_user', methods=['POST'])
@@ -91,10 +94,13 @@ def add_user():
 @is_login
 def del_user():
     user_name = request.form.get('user_name')
-    user_list = yaml_func.read
-    del user_list[user_name]
-    yaml_func.write_w(user_list)
-    return redirect(url_for('user.users'))
+    if user_name != '彭能鹏':
+        user_list = yaml_func.read
+        del user_list[user_name]
+        yaml_func.write_w(user_list)
+        return redirect(url_for('user.users'))
+    else:
+        return f'<h1>你是超级管理员，不能删除自己</h1>'
 
 
 @user_blue.route('/update_user', methods=['POST'])

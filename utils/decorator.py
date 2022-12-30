@@ -1,6 +1,8 @@
 from functools import wraps
 from flask import session, redirect, url_for, render_template
 from utils.config import BILI_EVENT
+from time import sleep
+import random
 
 
 def is_login(func):
@@ -33,3 +35,18 @@ def is_admin(func):
         else:
             return render_template('no_permission.html')
     return check_user
+
+
+def retry(func):
+    @wraps(func)
+    def retry_fun(*args, **kwargs):
+        response = ''
+        for _ in range(3):
+            sleep(random.uniform(1.0, 3.0))
+            response = func(*args, **kwargs)
+            if response['code'] == 0:
+                return response
+            print(f'{args[1]}失败重试, 接口返回：{response}')
+        print(f'{args[1]}请求有误, 接口返回：{response}')
+        return None
+    return retry_fun

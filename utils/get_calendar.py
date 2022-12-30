@@ -29,7 +29,7 @@ def _get_rili_data():
     for elem, el_xpath in element_xpath.items():
         festival_dict[elem] = res_html.xpath(el_xpath)
     festival_dict['day'] = datetime.datetime.now().strftime('%d')
-    return festival_dict
+    return 'rili', None, festival_dict
 
 
 # 新闻
@@ -47,33 +47,49 @@ def _get_news(key, value):
     return key, value, response
 
 
+# 微博
+def _get_weibo_hotnews():
+    url = 'https://m.weibo.cn/api/container/getIndex'
+    param = {
+        "containerid": "106003type=25&t=3&disable_hot=1&filter_type=realtimehot",
+        "title": "微博热搜",
+        "show_cache_when_error": 1,
+        "extparam": "seat=1&lcate=1001&pos=0_0&dgr=0&filter_type=realtimehot&mi_cid=100103&region_relas_conf=0&cate=10103&c_type=30&display_time=1672370114&pre_seqid=1044138437",
+        "luicode": 10000011,
+        "lfid": 231583,
+    }
+    response = requests.post(url, headers=header, params=param).json()['data']['cards'][0]['card_group']
+    return '微博热搜', None, response
+
+
 def get_data():
     executor = ThreadPoolExecutor()
     data_dict = {
-        'news': {
-            '新闻': 'BBM54PGAwangning',
-            '娱乐': 'BA10TA81wangning',
-            '体育': 'BA8E6OEOwangning',
-            '财经': 'BA8EE5GMwangning',
-            '军事': 'BAI67OGGwangning',
-            '科技': 'BA8D4A3Rwangning',
-            '手机': 'BAI6I0O5wangning',
-            '数码': 'BAI6JOD9wangning',
-            '时尚': 'BA8F6ICNwangning',
-            '游戏': 'BAI6RHDKwangning',
-            '教育': 'BA8FF5PRwangning',
-            '健康': 'BDC4QSV3wangning',
-            '旅游': 'BEO4GINLwangning'
-        },
-        'rili': None  # 日历
+        '新闻': 'BBM54PGAwangning',
+        '娱乐': 'BA10TA81wangning',
+        '体育': 'BA8E6OEOwangning',
+        '财经': 'BA8EE5GMwangning',
+        '军事': 'BAI67OGGwangning',
+        '科技': 'BA8D4A3Rwangning',
+        '手机': 'BAI6I0O5wangning',
+        '数码': 'BAI6JOD9wangning',
+        '时尚': 'BA8F6ICNwangning',
+        '游戏': 'BAI6RHDKwangning',
+        '教育': 'BA8FF5PRwangning',
+        '健康': 'BDC4QSV3wangning',
+        '旅游': 'BEO4GINLwangning',
+        '微博热搜': _get_weibo_hotnews,
+        'rili': _get_rili_data,  # 日历
     }
     threading_list = []
-    for key, value in data_dict['news'].items():
-        threading_list.append(executor.submit(_get_news, key, value))
+    for key, value in data_dict.items():
+        if key in ['微博热搜', 'rili']:
+            threading_list.append(executor.submit(value))
+        else:
+            threading_list.append(executor.submit(_get_news, key, value))
     for future in as_completed(threading_list):
         f = future.result()
-        data_dict['news'][f[0]] = f[2]
-    data_dict['rili'] = _get_rili_data()
+        data_dict[f[0]] = f[2]
     return data_dict
 
 

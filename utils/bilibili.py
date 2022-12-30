@@ -1,12 +1,12 @@
 import requests
-from time import sleep
-import random
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
 from utils.yaml_util import YamlUtil
 from utils.send_email import SendEmail
 from utils.config import TEMPLATES_PATH, DATA_YAML_PATH, BILI_EVENT, header
+from utils.decorator import retry
+from time import sleep
 
 
 class BILIBILI:
@@ -24,23 +24,18 @@ class BILIBILI:
         html = template.render(data=datas, ID=model)
         return html
 
+    @retry
     def _search_api(self, umid):
-        sleep(random.uniform(1.0, 3.0))
-        url = 'https://api.bilibili.com/x/space/arc/search'
+        url = 'https://api.bilibili.com/x/space/wbi/arc/search'
         param = {
             'mid': umid,
             'ps': 10,
             'tid': 0,
             'pn': 1,
             'order': 'pubdate',
-            'jsonp': 'jsonp'
+            'order_avoided': 'true',
         }
-        response = requests.get(url=url, headers=header, params=param).json()
-        if response['code'] == 0:
-            return response
-        else:
-            print(f'{umid}请求有误, 接口返回：{response}')
-            return None
+        return requests.get(url=url, headers=header, params=param).json()
 
     def _time_diff(self, start_time):
         end_time = datetime.date(datetime.now())

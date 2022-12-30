@@ -12,24 +12,21 @@ backstage_blue = Blueprint('backstage', __name__, url_prefix='/')
 @is_admin
 @is_login
 def upload_img():
-    if session.get('user_name') == '彭能鹏':
-        img_list = os.listdir(IMG_PATH)
-        if request.method == 'GET':
-            return render_template('backstage.html', img_list=img_list, msg=None)
-        else:
-            img_date = request.files['img']
-            if img_date:
-                img_name = img_date.filename
-                file_path = os.path.join(IMG_PATH, img_name)
-                img_date.save(file_path)
-                th = threading.Thread(target=compress_core, args=(file_path, file_path))
-                th.daemon = True
-                th.start()
-                return render_template('backstage.html', img_list=img_list, msg='上传成功')
-            else:
-                return render_template('backstage.html', img_list=img_list, msg='请选择图片')
+    img_list = os.listdir(IMG_PATH)
+    if request.method == 'GET':
+        return render_template('backstage.html', img_list=img_list, msg=None)
     else:
-        return render_template('no_permission.html')
+        img_date = request.files['img']
+        if img_date:
+            img_name = img_date.filename
+            file_path = os.path.join(IMG_PATH, img_name)
+            img_date.save(file_path)
+            th = threading.Thread(target=compress_core, args=(file_path, file_path))
+            th.daemon = True
+            th.start()
+            return render_template('backstage.html', img_list=img_list, msg='上传成功')
+        else:
+            return render_template('backstage.html', img_list=img_list, msg='请选择图片')
 
 
 @backstage_blue.route('/del_img', methods=['POST'])
