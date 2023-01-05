@@ -28,14 +28,20 @@
       <span class="user_span_info_w user_span_info_bgcolor">{{ info[1] }}</span>
       <span class="user_span_info_w user_span_info_bgcolor">{{ info[2] }}</span>
       <span class="user_span_info_w user_span_info_bgcolor">{{ info[3] }}</span>
-      <span class="suer_span_but">
-        <form action="/del_user" method="post">
-          <input name="user_name" type="hidden" value="{{ user_name }}">
-          <button type="submit" value="删除" class="user_but">删除</button>
-        </form>
-        <button type="button" value="修改" class="user_but" onclick="update('{{ user_name }}', '{{ info[0] }}',
-        '{{ info[1] }}', '{{ info[2] }}', '{{ info[3] }}');">修改</button>
-      </span>
+      <form action="/del_user" method="post">
+        <input name="user_name" type="hidden" value="{{ user_name }}">
+        <button type="submit" value="删除" class="user_but">删除</button>
+      </form>
+      <button type="button" value="修改" class="user_but" onclick="update('{{ user_name }}', '{{ info[0] }}',
+      '{{ info[1] }}', '{{ info[2] }}', '{{ info[3] }}');">修改</button>
+      <form action="/push" method="post">
+        <input name="user_name" type="hidden" value="{{ user_name }}">
+        <button type="submit" value="推送" class="user_but">启动推送</button>
+      </form>
+      <form action="/update" method="post">
+        <input name="user_name" type="hidden" value="{{ user_name }}">
+        <button type="submit" value="更新" class="user_but">启动更新</button>
+      </form>
     </div>
     {% endfor %}
     <div class="cover" id="cover">

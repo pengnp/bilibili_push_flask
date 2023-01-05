@@ -1,4 +1,3 @@
-from pprint import pprint
 import json
 import requests
 from lxml import etree
@@ -91,7 +90,3 @@ def get_data():
         f = future.result()
         data_dict[f[0]] = f[2]
     return data_dict
-
-
-if __name__ == '__main__':
-    pprint(get_data())

@@ -83,7 +83,7 @@ def add_user():
             }
         }
         yaml_func.write_a(info)
-        BILI.start(user_name, BILI.update_user_info)
+        BILI.start('update', BILI.update_user_info, user_name)
         return redirect(url_for('user.users'))
     else:
         return f'<h1>用户已存在</h1>'
@@ -131,3 +131,19 @@ def log_out():
     except:
         pass
     return redirect(url_for('user.login'))
+
+
+@user_blue.route('/push', methods=['POST'])
+@thread_check
+def push():
+    user_name = request.form.get('user_name')
+    BILI.start('push', BILI.push, user_name)
+    return redirect(url_for('user.users'))
+
+
+@user_blue.route('/update', methods=['POST'])
+@thread_check
+def update():
+    user_name = request.form.get('user_name')
+    BILI.start('update', BILI.update_user_info, user_name)
+    return redirect(url_for('user.users'))

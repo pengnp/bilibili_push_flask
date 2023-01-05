@@ -80,7 +80,8 @@ class BILIBILI:
         if flag:
             self._yaml_fun.write_w(self.data_result)
             BILI_EVENT.ALL_EVENT['update'] = False
-            print(f'{user_k}添加完成')
+            print('定时任务update, 执行完成')
+            return None
         if result:
             return '有up更改了名字', user_v['email'], result
 
@@ -113,8 +114,8 @@ class BILIBILI:
                     return f"<p style='font-size:15px;'> {v} </p>"
         return False
 
-    def push(self, user_k, user_v):
-        push_datas = {}
+    def push(self, user_k, user_v, flag=False):
+        push_datas, subject, msg = {}, '', ''
         for umid, uv in user_v['mids'].items():
             if uv[2] > 7:
                 continue
@@ -143,6 +144,13 @@ class BILIBILI:
                 subject = f"{'、'.join(unames)}更新了视频"
             msg = self._template_render(push_datas, user_v['model'])
             return subject, user_v['email'], msg
+        if flag:
+            if push_datas:
+                SendEmail(subject, user_v['email'], msg).send_email()
+            self._yaml_fun.write_w(self.data_result)
+            BILI_EVENT.ALL_EVENT['push'] = False
+            print('定时任务push, 执行完成')
+            return None
         return False
 
     def week_chenck(self, user_k, user_v):
@@ -167,14 +175,17 @@ class BILIBILI:
             print(f'检测到数据文件正在被使用,任务{event1}暂时停止')
         BILI_EVENT.ALL_EVENT[event1] = True
 
-    def start(self, event, function):
+    def start(self, event, function, user=None):
         event_list = ['push', 'update', 'check']
         threading_list = []
-        if event in event_list:
-            event_list.remove(event)
-            self._event_check(event, event_list[0], event_list[1])
-            print(f'定时任务执行, 执行任务：{event}, 执行时间：{datetime.now()}')
-            self.data_result = self._yaml_fun.read
+        event_list.remove(event)
+        self._event_check(event, event_list[0], event_list[1])
+        print(f'定时任务执行, 执行任务：{event}, 执行时间：{datetime.now()}')
+        self.data_result = self._yaml_fun.read
+        if user is not None:
+            threading_list.append(self._executor.submit(function, user, self.data_result[user], True))
+            as_completed(threading_list)
+        else:
             for user_k, user_v in self.data_result.items():
                 if self.data_result[user_k][event] == 'Y':
                     threading_list.append(self._executor.submit(function, user_k, user_v))
@@ -184,13 +195,7 @@ class BILIBILI:
                     SendEmail(f[0], f[1], f[2]).send_email()
             self._yaml_fun.write_w(self.data_result)
             BILI_EVENT.ALL_EVENT[event] = False
-            print(f'定时任务执行{event}, 执行完成')
-        else:
-            print(f'添加用户：{event}, 执行时间：{datetime.now()}')
-            BILI_EVENT.ALL_EVENT['update'] = True
-            self.data_result = self._yaml_fun.read
-            threading_list.append(self._executor.submit(function, event, self.data_result[event], True))
-            as_completed(threading_list)
+            print(f'定时任务{event}, 执行完成')
 
 
 if __name__ == '__main__':

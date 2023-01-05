@@ -24,8 +24,9 @@
     font-size: 30px;
 }
 .user_content_info{
-    width: 950px;
+    width: 1515px;
     height: 150px;
+    overflow-x:auto;
 }
 .user_content{
     overflow-y:auto;
@@ -70,13 +71,14 @@
     background-color: #FFAA33;
 }
 .user_but{
-    width: 160px;
-    height: 75px;
+    width: 180px;
+    height: 150px;
     float: left;
     font-size: 40px;
 }
 .suer_span_but{
     width: 158px;
+    height: 150px;
     display: block;
     float: left;
 }
