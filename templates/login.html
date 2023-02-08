@@ -43,15 +43,15 @@
             </table>
         </div>
         <div class="box_right">
-            <h1>摸鱼办提醒您</h1>
+            <h1>近期假日倒计时</h1>
             {% for i in range(0, 6) %}
             <div class="box_djs">
                 <span class="djs_fes">{{ data_dict.rili.festival_name[i] }}({{ data_dict.rili.festival_date[i] }})</span>
                 <span class="djs_date">{{ data_dict.rili.festival_djs[i] }}</span>
             </div>
             {% endfor %}
-            <img src="/static/img/1.jpg" alt="" id="tupian" class="tupian">
-            <form action="/" method="post" id="login">
+            <img src="/static/img/lunbo/1.jpg" alt="" id="tupian" class="tupian">
+            <form action="/" method="post" id="login" style="display: none;">
                 <p>账号:</p>
                 <input type="text" name="user_name" class="login_input">
                 <button type="submit" value="提交" class="login_but">提交</button>
@@ -78,8 +78,24 @@
                         <a href="{{v.scheme}}" style="color: black;">{{v.desc}}</a>
                     </span>
                     {%if 'icon' in v%}
-                    <span>
-                        <img src="{{v.icon}}" class="weibo_icon">
+                    <span  class="weibo_icon">
+                        <img src="{{v.icon}}">
+                    </span>
+                    {%endif%}
+                </div>
+                {%endfor%}
+            {%elif key == 'B站热搜'%}
+                {%for v in data_dict[key]%}
+                <div class="weibo_hot">
+                    <span class="bili_index">
+                        {{v.index}}.
+                    </span>
+                    <span class="weibo_title">
+                        <a href="https://m.bilibili.com/search?keyword={{v.show_name}}" style="color: black;">{{v.show_name}}</a>
+                    </span>
+                    {%if v.icon != ''%}
+                    <span  class="bili_icon">
+                        <img src="static/img/hot/{{v.icon}}">
                     </span>
                     {%endif%}
                 </div>

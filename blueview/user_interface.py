@@ -69,24 +69,27 @@ def add_user():
     user_mid = request.form.get('user_id')
     user_email = request.form.get('user_email')
     user_model = request.form.get('user_model')
-    if user_name not in yaml_func.read:
-        info = {
-            user_name: {
-                'mid': user_mid,
-                'email': user_email,
-                'model': user_model,
-                'mids': {},
-                'update': 'N',
-                'check': 'N',
-                'push': 'N',
-                'login_time': '暂无登录'
+    if all([user_name, user_mid, user_email, user_model]):
+        if user_name not in yaml_func.read:
+            info = {
+                user_name: {
+                    'mid': user_mid,
+                    'email': user_email,
+                    'model': user_model,
+                    'mids': {},
+                    'update': 'N',
+                    'check': 'N',
+                    'push': 'N',
+                    'login_time': '暂无登录'
+                }
             }
-        }
-        yaml_func.write_a(info)
-        BILI.start('update', BILI.update_user_info, user_name)
-        return redirect(url_for('user.users'))
+            yaml_func.write_a(info)
+            BILI.start('update', BILI.update_user_info, user_name)
+            return redirect(url_for('user.users'))
+        else:
+            return f'<h1>用户已存在</h1>'
     else:
-        return f'<h1>用户已存在</h1>'
+        return f'<h1>数据不能为空</h1>'
 
 
 @user_blue.route('/del_user', methods=['POST'])

@@ -1,4 +1,3 @@
-document.getElementById('cover').style.display="none";
 function update(user_name, user_email, push, check, update){
     document.getElementById('cover').style.display="";
     document.getElementById('cover_box_update').style.display="";

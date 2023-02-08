@@ -12,7 +12,7 @@
     <div class="box">
         {%for img in img_list%}
         <div class="box_img">
-            <img src="static/img/{{img}}" alt="">
+            <img src="static/img/lunbo/{{img}}" alt="">
             <form action="/del_img" method="post">
                 <input name="img_name" type="hidden" value="{{img}}">
                 <button type="submit" class="img_del">删除</button>

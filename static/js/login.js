@@ -28,7 +28,7 @@ function lunbo(){
     if(tupian){
         index = Math.floor(Math.random() * img_list.length);
         var img = document.getElementById("tupian");
-        img.src = "/static/img/"+img_list[index];
+        img.src = "/static/img/lunbo/"+img_list[index];
         img_list.splice(index, 1);
         if (img_list.length == 0){
             img_list = JSON.parse(data).img

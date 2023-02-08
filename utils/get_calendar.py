@@ -40,7 +40,7 @@ def _get_news(key, value):
             phot_id = data['photosetID'].split('|')
             data['skipURL'] = f'https://3g.163.com/war/photoview/{phot_id[0]}/{phot_id[1]}.html'
         if data['imgsrc'] == '':
-            data['imgsrc'] = '/static/img/1.jpg'
+            data['imgsrc'] = '/static/img/lunbo/1.jpg'
         if data['url'] == '':
             data['url'] = f"https://3g.163.com/news/article/{data['docid']}.html"
     return key, value, response
@@ -61,6 +61,26 @@ def _get_weibo_hotnews():
     return '微博热搜', None, response
 
 
+# b站热搜
+def _get_bili_hotnews():
+    url = 'https://api.bilibili.com/x/web-interface/wbi/search/square?limit=50&platform=web'
+    response = requests.get(url, headers=header).json()['data']['trending']['list']
+    index = 0
+    for data in response:
+        if data['icon'] != '':
+            if 'EeuqbMwao9' in data['icon']:
+                data['icon'] = 'EeuqbMwao9.png'
+            elif 'lrx9rnKo24' in data['icon']:
+                data['icon'] = 'lrx9rnKo24.png'
+            elif 'gif' in data['icon']:
+                data['icon'] = 'zhibo.gif'
+            else:
+                data['icon'] = 'UF7B1wVKT2.png'
+        index += 1
+        data['index'] = index
+    return 'B站热搜', None, response
+
+
 def get_data():
     executor = ThreadPoolExecutor()
     data_dict = {
@@ -77,12 +97,13 @@ def get_data():
         '教育': 'BA8FF5PRwangning',
         '健康': 'BDC4QSV3wangning',
         '旅游': 'BEO4GINLwangning',
+        'B站热搜': _get_bili_hotnews,
         '微博热搜': _get_weibo_hotnews,
         'rili': _get_rili_data,  # 日历
     }
     threading_list = []
     for key, value in data_dict.items():
-        if key in ['微博热搜', 'rili']:
+        if key in ['微博热搜', 'rili', 'B站热搜']:
             threading_list.append(executor.submit(value))
         else:
             threading_list.append(executor.submit(_get_news, key, value))
@@ -90,3 +111,7 @@ def get_data():
         f = future.result()
         data_dict[f[0]] = f[2]
     return data_dict
+
+
+if __name__ == '__main__':
+    print(len(_get_bili_hotnews()))
