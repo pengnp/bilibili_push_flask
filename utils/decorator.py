@@ -12,7 +12,7 @@ def is_login(func):
         if user_name:
             return func(*args, **kwargs)
         else:
-            return redirect(url_for('user.login'))
+            return redirect(url_for('user.logs.txt'))
     return check_login
 
 

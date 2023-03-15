@@ -1,5 +1,16 @@
 import os
+from rqdatac import *
+init()
 
+
+df = all_instruments('Future')
+order_book_ids = df.order_book_id.tolist()
+orders = []
+for order in order_book_ids:
+    if order[-2:] == '99' or order[:2] == 'AG' or order[:2] == 'FG':
+        trading_hours = instruments(order).trading_hours
+        if '21:01-23:00' in trading_hours or '21:01-01:00' in trading_hours:
+            orders.append(order)
 
 #  文件路径
 PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +34,7 @@ class BILI_EVENT:
 
 
 header = {
-    "User-Agent": "Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 "
-                  "(KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36 Edg/107.0.0.0"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.63",
+    "referer": "https://www.bilibili.com/",
 }
 

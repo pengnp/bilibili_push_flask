@@ -4,6 +4,8 @@ from lxml import etree
 import datetime
 from utils.config import header
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import random
+import string
 
 
 # 日历数据
@@ -63,7 +65,7 @@ def _get_weibo_hotnews():
 
 # b站热搜
 def _get_bili_hotnews():
-    url = 'https://api.bilibili.com/x/web-interface/wbi/search/square?limit=50&platform=web'
+    url = 'https://api.bilibili.com/x/web-interface/wbi/search/square?limit=10&platform=web&w_rid=769a8271ea29244b10ca5cf324e3c3b6&wts=1678688719'
     response = requests.get(url, headers=header).json()['data']['trending']['list']
     index = 0
     for data in response:
@@ -114,4 +116,7 @@ def get_data():
 
 
 if __name__ == '__main__':
-    print(len(_get_bili_hotnews()))
+    sign = ''.join(random.sample(string.ascii_letters + string.digits, 32))
+    url = f'https://api.bilibili.com/x/web-interface/wbi/search/square?limit=50&platform=web&w_rid={sign}&wts=1678412684'
+    response = requests.get(url, headers=header).json()
+    print(response)
