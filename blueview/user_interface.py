@@ -13,6 +13,11 @@ yaml_func = YamlUtil(DATA_YAML_PATH)
 user_blue = Blueprint('user', __name__, url_prefix='/')
 
 
+@user_blue.route('/report', methods=['GET'])
+def report():
+    return render_template('Test_API_report.html')
+
+
 @user_blue.route('/', methods=['POST', 'GET'])
 def login():
     img_list = json.dumps({'img': os.listdir(IMG_PATH)}, ensure_ascii=False)

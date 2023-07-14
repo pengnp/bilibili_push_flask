@@ -3,15 +3,6 @@ from rqdatac import *
 init()
 
 
-df = all_instruments('Future')
-order_book_ids = df.order_book_id.tolist()
-orders = []
-for order in order_book_ids:
-    if order[-2:] == '99' or order[:2] == 'AG' or order[:2] == 'FG':
-        trading_hours = instruments(order).trading_hours
-        if '21:01-23:00' in trading_hours or '21:01-01:00' in trading_hours:
-            orders.append(order)
-
 #  文件路径
 PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_YAML_PATH = os.path.join(PATH, 'static/datafile/data.yml')
